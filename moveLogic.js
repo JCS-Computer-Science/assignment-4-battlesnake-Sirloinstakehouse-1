@@ -9,8 +9,10 @@ export default function move(gameState){
     // We've included code to prevent your Battlesnake from moving backwards
     const myHead = gameState.you.body[0];
     const myNeck = gameState.you.body[1];
+    const snakeLength = gameState.you.length;
     const height = gameState.board.height;
     const width = gameState.board.width;
+    
     if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
         moveSafety.left = false;
         
@@ -27,23 +29,39 @@ export default function move(gameState){
     // TODO: Step 1 - Prevent your Battlesnake from moving out of bounds
     // gameState.board contains an object representing the game board including its width and height
     // https://docs.battlesnake.com/api/objects/board
-    if (myHead.y == height) {
+    if (myHead.y == height - 1) {
         moveSafety.up = false;
-
-    } else if (myHead.x == width) {
+    }
+    if (myHead.x == width - 1) {
         moveSafety.right = false;
-
-    } else if (myHead.y == 0) {
+    }
+    if (myHead.y == 0) {
         moveSafety.down = false;
-
-    } else if (myHead.x == 0) {
+    }
+    if (myHead.x == 0) {
         moveSafety.left = false;
     }
     // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
     // gameState.you contains an object representing your snake, including its coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
-    
-    
+    for (let i = 0; i < snakeLength; i++) {
+        const myBody = gameState.you.body[i];
+        //check if body segments are within the grid spaces next to the snake ONLY
+
+
+        // if (myBody.x < myHead.x) {
+        //     moveSafety.left = false;
+        // }
+        // if (myBody.x > myHead.x) {
+        //     moveSafety.right = false;
+        // }
+        // if (myBody.y < myHead.y) {
+        //     moveSafety.down = false;
+        // }
+        // if (myBody.y > myHead.y) {
+        //     moveSafety.up = false;
+        // }
+    }
     // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     // gameState.board.snakes contains an array of enemy snake objects, which includes their coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
