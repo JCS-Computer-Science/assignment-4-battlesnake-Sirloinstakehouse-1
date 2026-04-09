@@ -10,8 +10,13 @@ export default function move(gameState){
     const myHead = gameState.you.body[0];
     const myNeck = gameState.you.body[1];
     const snakeLength = gameState.you.length;
+    const enemySnakes = gameState.board.snakes; // an array of enemy snakes
     const height = gameState.board.height;
     const width = gameState.board.width;
+    const up = [myHead.x, myHead.y + 1];
+    const down = [myHead.x, myHead.y - 1];
+    const left = [myHead.x - 1, myHead.y];
+    const right = [myHead.x + 1, myHead.y];
     
     if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
         moveSafety.left = false;
@@ -45,26 +50,53 @@ export default function move(gameState){
     // gameState.you contains an object representing your snake, including its coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
     for (let i = 0; i < snakeLength; i++) {
-        const myBody = gameState.you.body[i];
+         const snake = gameState.you.body[i]
         //check if body segments are within the grid spaces next to the snake ONLY
+        if (snake.x == up[0] && snake.y == up[1]) {
+            moveSafety.up = false;
+        }
+        if (snake.x == down[0] && snake.y == down[1]) {
+                moveSafety.down = false;
+        }
+        if (snake.x == right[0] && snake.y == right[1]) {
+                moveSafety.right = false;
+        }
+        if (snake.x == left[0] && snake.y == left[1]) {
+                moveSafety.left = false;
+        }
 
-
-        // if (myBody.x < myHead.x) {
-        //     moveSafety.left = false;
-        // }
-        // if (myBody.x > myHead.x) {
-        //     moveSafety.right = false;
-        // }
-        // if (myBody.y < myHead.y) {
-        //     moveSafety.down = false;
-        // }
-        // if (myBody.y > myHead.y) {
-        //     moveSafety.up = false;
-        // }
     }
+
+    
     // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     // gameState.board.snakes contains an array of enemy snake objects, which includes their coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
+    
+    for (let i = 0; i < enemySnakes.length; i++) {
+        const eachSnake = enemySnakes[i];
+
+        for (let j = 0; j < eachSnake.length; j++) {
+            const bodyOfSnakes = eachSnake.body[j];
+        
+            if (bodyOfSnakes.x == up[0] && bodyOfSnakes.y == up[1]) {
+                moveSafety.up = false;
+            }
+            if (bodyOfSnakes.x == down[0] && bodyOfSnakes.y == down[1]) {
+                moveSafety.down = false;
+            }
+            if (bodyOfSnakes.x == right[0] && bodyOfSnakes.y == right[1]) {
+                moveSafety.right = false;
+            }
+            if (bodyOfSnakes.x == left[0] && bodyOfSnakes.y == left[1]) {
+                moveSafety.left = false;
+            }
+        }
+    }
+    console.log(moveSafety);
+
+    // if there are two objects that are false in the safeMoves element, then we will look at the
+    // objects that are true, and check two spots ahead of them, if nothing changes then add one more spot ahead
+    // continue until one returns false, or if the max grid space has been reached. recursivly look at each space
     
     // Are there any safe moves left?
     
