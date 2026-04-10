@@ -13,6 +13,9 @@ export default function move(gameState){
     const enemySnakes = gameState.board.snakes; // an array of enemy snakes
     const height = gameState.board.height;
     const width = gameState.board.width;
+    const health = gameState.you.health;
+    const food = gameState.board.food;
+    
     const up = [myHead.x, myHead.y + 1];
     const down = [myHead.x, myHead.y - 1];
     const left = [myHead.x - 1, myHead.y];
@@ -97,7 +100,8 @@ export default function move(gameState){
     // if there are two objects that are false in the safeMoves element, then we will look at the
     // objects that are true, and check two spots ahead of them, if nothing changes then add one more spot ahead
     // continue until one returns false, or if the max grid space has been reached. recursivly look at each space
-    
+
+
     // Are there any safe moves left?
     
     //Object.keys(moveSafety) returns ["up", "down", "left", "right"]
@@ -114,7 +118,10 @@ export default function move(gameState){
     
     // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
     // gameState.board.food contains an array of food coordinates https://docs.battlesnake.com/api/objects/board
-    
+    function findFood() {
+        let middle = {x: (width -1)/ 2, y: (height - 1)/2};
+        if ()
+    }
     console.log(`MOVE ${gameState.turn}: ${nextMove}`)
     return { move: nextMove };
 }
