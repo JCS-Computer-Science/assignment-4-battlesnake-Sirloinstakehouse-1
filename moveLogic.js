@@ -1,3 +1,5 @@
+import e from "express";
+
 export default function move(gameState){
     let moveSafety = {
         up: true,
@@ -15,7 +17,7 @@ export default function move(gameState){
     const width = gameState.board.width;
     const health = gameState.you.health;
     const food = gameState.board.food;
-    
+
     const up = [myHead.x, myHead.y + 1];
     const down = [myHead.x, myHead.y - 1];
     const left = [myHead.x - 1, myHead.y];
@@ -100,7 +102,7 @@ export default function move(gameState){
     // if there are two objects that are false in the safeMoves element, then we will look at the
     // objects that are true, and check two spots ahead of them, if nothing changes then add one more spot ahead
     // continue until one returns false, or if the max grid space has been reached. recursivly look at each space
-
+    
 
     // Are there any safe moves left?
     
@@ -112,16 +114,43 @@ export default function move(gameState){
         console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
         return { move: "down" };
     }
+    if (findFood(food, myHead).x > myHead.x) {
+        const nextMove = safeMoves.right;
+    }
+    if (findFood(food, myHead).x < myHead.x) {
+        const nextMove = safeMoves.left;
+    }
+    if (findFood(food, myHead).y > myHead.y) {
+        const nextMove = safeMoves.up;
+    }
+    if (findFood(food, myHead).y < myHead.y) {
+        const nextMove = safeMoves.down;
+    }
     
     // Choose a random move from the safe moves
     const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
     
     // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
     // gameState.board.food contains an array of food coordinates https://docs.battlesnake.com/api/objects/board
-    function findFood() {
-        let middle = {x: (width -1)/ 2, y: (height - 1)/2};
-        if ()
-    }
-    console.log(`MOVE ${gameState.turn}: ${nextMove}`)
+    
+    
+console.log(`MOVE ${gameState.turn}: ${nextMove}`)
     return { move: nextMove };
+
 }
+    function findFood(array, position) {
+        let shortestDis = Infinity;
+        let nearestFood = null;
+        for (let i = 0; i < array.length; i++) {
+            let distance = (Math.abs(array[i].x - position.x)) + (Math.abs(array[i].y - position.y));
+            if (distance < shortestDis) {
+                shortestDis = distance;
+                nearestFood = array[i];
+                return shortestDis, nearestFood;
+            }
+        }
+    }
+        
+       
+
+    
