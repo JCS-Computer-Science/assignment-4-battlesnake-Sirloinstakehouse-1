@@ -1,4 +1,5 @@
 import e from "express";
+import findFood from "./food.js";
 
 export default function move(gameState){
     let moveSafety = {
@@ -17,6 +18,8 @@ export default function move(gameState){
     const width = gameState.board.width;
     const health = gameState.you.health;
     const food = gameState.board.food;
+    // make an array of harzards for each move
+    // resests when a move is taken
 
     const up = [myHead.x, myHead.y + 1];
     const down = [myHead.x, myHead.y - 1];
@@ -54,7 +57,7 @@ export default function move(gameState){
     // TODO: Step 2 - Prevent your Battlesnake from colliding with itself
     // gameState.you contains an object representing your snake, including its coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
-    for (let i = 0; i < snakeLength; i++) {
+    for (let i = 0; i < snakeLength - 1; i++) {
          const snake = gameState.you.body[i]
         //check if body segments are within the grid spaces next to the snake ONLY
         if (snake.x == up[0] && snake.y == up[1]) {
@@ -85,6 +88,7 @@ export default function move(gameState){
         
             if (bodyOfSnakes.x == up[0] && bodyOfSnakes.y == up[1]) {
                 moveSafety.up = false;
+                
             }
             if (bodyOfSnakes.x == down[0] && bodyOfSnakes.y == down[1]) {
                 moveSafety.down = false;
@@ -98,12 +102,7 @@ export default function move(gameState){
         }
     }
     console.log(moveSafety);
-
-    // if there are two objects that are false in the safeMoves element, then we will look at the
-    // objects that are true, and check two spots ahead of them, if nothing changes then add one more spot ahead
-    // continue until one returns false, or if the max grid space has been reached. recursivly look at each space
     
-
     // Are there any safe moves left?
     
     //Object.keys(moveSafety) returns ["up", "down", "left", "right"]
@@ -114,19 +113,43 @@ export default function move(gameState){
         console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
         return { move: "down" };
     }
+
+    // if (safeMoves.length === 2) {
+    //     // figure out which direction is more safe
+    //     // a for loop that messures how many moves it will take until you die
+    //     // choose the one that is bigger
+        
+    // }
+    console.log(findFood(food, myHead).x);
+    console.log(findFood(food, myHead).y);
+    //if there are some food
+    //figure out the closest food
     if (findFood(food, myHead).x > myHead.x) {
-        const nextMove = safeMoves.right;
+        if (safeMoves.includes(right)){
+            const nextMove = safeMoves.right;
+            console.log("moving right");
+        }
     }
     if (findFood(food, myHead).x < myHead.x) {
-        const nextMove = safeMoves.left;
+        if (safeMoves.includes(left)) {
+            const nextMove = safeMoves.left;
+            console.log("moving left");
+        }
     }
     if (findFood(food, myHead).y > myHead.y) {
-        const nextMove = safeMoves.up;
+        if (safeMoves.includes(up)) {
+            const nextMove = safeMoves.up;
+            console.log("moving up");
+        }
     }
     if (findFood(food, myHead).y < myHead.y) {
-        const nextMove = safeMoves.down;
+        if (safeMoves.includes(down)) {
+            const nextMove = safeMoves.down;
+            console.log("moving down");
+        }
     }
-    
+    // doesn't work rn. idk why, all I know is that the if statment should work
+
     // Choose a random move from the safe moves
     const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
     
@@ -138,19 +161,3 @@ console.log(`MOVE ${gameState.turn}: ${nextMove}`)
     return { move: nextMove };
 
 }
-    function findFood(array, position) {
-        let shortestDis = Infinity;
-        let nearestFood = null;
-        for (let i = 0; i < array.length; i++) {
-            let distance = (Math.abs(array[i].x - position.x)) + (Math.abs(array[i].y - position.y));
-            if (distance < shortestDis) {
-                shortestDis = distance;
-                nearestFood = array[i];
-                return shortestDis, nearestFood;
-            }
-        }
-    }
-        
-       
-
-    
