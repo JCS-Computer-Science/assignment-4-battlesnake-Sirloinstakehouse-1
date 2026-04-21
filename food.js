@@ -1,4 +1,4 @@
-export default function findFood(array, position) {
+export default function findClose(array, position) {
     let shortestDis = Infinity;
     let nearestFood = null;
         

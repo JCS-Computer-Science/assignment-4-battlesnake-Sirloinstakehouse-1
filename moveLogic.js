@@ -1,5 +1,6 @@
 import e from "express";
-import findFood from "./food.js";
+import findClose from "./food.js";
+import makeGrid from "./grid.js";
 
 export default function move(gameState){
     let moveSafety = {
@@ -20,11 +21,18 @@ export default function move(gameState){
     const food = gameState.board.food;
     // make an array of harzards for each move
     // resests when a move is taken
+    const ups = [myHead.x, myHead.y + 1];
+    const downs = [myHead.x, myHead.y - 1];
+    const lefts = [myHead.x - 1, myHead.y];
+    const rights = [myHead.x + 1, myHead.y];
 
-    const up = [myHead.x, myHead.y + 1];
-    const down = [myHead.x, myHead.y - 1];
-    const left = [myHead.x - 1, myHead.y];
-    const right = [myHead.x + 1, myHead.y];
+    let grid = [];
+    for (let i = 0; i < width; i++) {
+        grid.push([]);
+        for (let j = 0; j < height; j++) {
+            grid[i].push({x: i, y: j, safe: true});
+        }
+    }
     
     if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
         moveSafety.left = false;
@@ -60,92 +68,98 @@ export default function move(gameState){
     for (let i = 0; i < snakeLength - 1; i++) {
          const snake = gameState.you.body[i]
         //check if body segments are within the grid spaces next to the snake ONLY
-        if (snake.x == up[0] && snake.y == up[1]) {
+        if (snake.x == ups[0] && snake.y == ups[1]) {
             moveSafety.up = false;
         }
-        if (snake.x == down[0] && snake.y == down[1]) {
+        if (snake.x == downs[0] && snake.y == downs[1]) {
                 moveSafety.down = false;
         }
-        if (snake.x == right[0] && snake.y == right[1]) {
+        if (snake.x == rights[0] && snake.y == rights[1]) {
                 moveSafety.right = false;
         }
-        if (snake.x == left[0] && snake.y == left[1]) {
+        if (snake.x == lefts[0] && snake.y == lefts[1]) {
                 moveSafety.left = false;
         }
-
     }
-
     
     // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     // gameState.board.snakes contains an array of enemy snake objects, which includes their coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
-    
+    let arrayOfEnemyBodies = [];
     for (let i = 0; i < enemySnakes.length; i++) {
         const eachSnake = enemySnakes[i];
 
         for (let j = 0; j < eachSnake.length; j++) {
             const bodyOfSnakes = eachSnake.body[j];
-        
-            if (bodyOfSnakes.x == up[0] && bodyOfSnakes.y == up[1]) {
-                moveSafety.up = false;
-                
-            }
-            if (bodyOfSnakes.x == down[0] && bodyOfSnakes.y == down[1]) {
-                moveSafety.down = false;
-            }
-            if (bodyOfSnakes.x == right[0] && bodyOfSnakes.y == right[1]) {
+            arrayOfEnemyBodies.push(bodyOfSnakes);
+            if (bodyOfSnakes.x == rights[0] && bodyOfSnakes.y == rights[1]) {
                 moveSafety.right = false;
             }
-            if (bodyOfSnakes.x == left[0] && bodyOfSnakes.y == left[1]) {
+            if (bodyOfSnakes.x == lefts[0] && bodyOfSnakes.y == lefts[1]) {
                 moveSafety.left = false;
+            }
+            if (bodyOfSnakes.x == ups[0] && bodyOfSnakes.y == ups[1]) {
+                moveSafety.up = false;
+            }
+            if (bodyOfSnakes.x == downs[0] && bodyOfSnakes.y == downs[1]) {
+                moveSafety.down = false;
             }
         }
     }
-    console.log(moveSafety);
-    
     // Are there any safe moves left?
     
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < arrayOfEnemyBodies.length; j++) {
+            if (grid[i][j].x == arrayOfEnemyBodies[j].x && grid[i][j].y == arrayOfEnemyBodies[j].y) {
+                grid[i][j].safe = false;
+                return grid;
+            }
+        }
+    }
+    console.log(makeGrid(gameState, grid));
     //Object.keys(moveSafety) returns ["up", "down", "left", "right"]
     //.filter() filters the array based on the function provided as an argument (using arrow function syntax here)
     //In this case we want to filter out any of these directions for which moveSafety[direction] == false
     const safeMoves = Object.keys(moveSafety).filter(direction => moveSafety[direction]);
+    console.log(safeMoves);
     if (safeMoves.length == 0) {
         console.log(`MOVE ${gameState.turn}: No safe moves detected! Moving down`);
         return { move: "down" };
     }
 
-    // if (safeMoves.length === 2) {
-    //     // figure out which direction is more safe
-    //     // a for loop that messures how many moves it will take until you die
-    //     // choose the one that is bigger
-        
-    // }
-    console.log(findFood(food, myHead).x);
-    console.log(findFood(food, myHead).y);
-    //if there are some food
-    //figure out the closest food
-    if (findFood(food, myHead).x > myHead.x) {
-        if (safeMoves.includes(right)){
-            const nextMove = safeMoves.right;
-            console.log("moving right");
+    let goodFood = findClose(food, myHead);
+    console.log(goodFood.x);
+    console.log(goodFood.y);
+    
+    if (health < 50) {
+        console.log("Health is low, looking for food");
+        if (goodFood.x > myHead.x) {
+            if (safeMoves.includes('right')){
+                const nextMove = "right";
+                console.log("moving right");
+                return { move: nextMove };
+            }
         }
-    }
-    if (findFood(food, myHead).x < myHead.x) {
-        if (safeMoves.includes(left)) {
-            const nextMove = safeMoves.left;
-            console.log("moving left");
+        if (goodFood.x < myHead.x) {
+            if (safeMoves.includes('left')) {
+                const nextMove = "left";
+                console.log("moving left");
+                return { move: nextMove };
+            }
         }
-    }
-    if (findFood(food, myHead).y > myHead.y) {
-        if (safeMoves.includes(up)) {
-            const nextMove = safeMoves.up;
-            console.log("moving up");
+        if (goodFood.y > myHead.y) {
+            if (safeMoves.includes('up')) {
+                const nextMove = "up";
+                console.log("moving up");
+                return { move: nextMove };
+            }
         }
-    }
-    if (findFood(food, myHead).y < myHead.y) {
-        if (safeMoves.includes(down)) {
-            const nextMove = safeMoves.down;
-            console.log("moving down");
+        if (goodFood.y < myHead.y) {
+            if (safeMoves.includes('down')) {
+                const nextMove = "down";
+                console.log("moving down");
+                return { move: nextMove };
+            }
         }
     }
     // doesn't work rn. idk why, all I know is that the if statment should work
