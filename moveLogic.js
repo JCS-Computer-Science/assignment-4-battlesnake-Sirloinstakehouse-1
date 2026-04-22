@@ -26,13 +26,6 @@ export default function move(gameState){
     const lefts = [myHead.x - 1, myHead.y];
     const rights = [myHead.x + 1, myHead.y];
 
-    let grid = [];
-    for (let i = 0; i < width; i++) {
-        grid.push([]);
-        for (let j = 0; j < height; j++) {
-            grid[i].push({x: i, y: j, safe: true});
-        }
-    }
     
     if (myNeck.x < myHead.x) {        // Neck is left of head, don't move left
         moveSafety.left = false;
@@ -108,15 +101,8 @@ export default function move(gameState){
     }
     // Are there any safe moves left?
     
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < arrayOfEnemyBodies.length; j++) {
-            if (grid[i][j].x == arrayOfEnemyBodies[j].x && grid[i][j].y == arrayOfEnemyBodies[j].y) {
-                grid[i][j].safe = false;
-                return grid;
-            }
-        }
-    }
-    console.log(makeGrid(gameState, grid));
+   
+
     //Object.keys(moveSafety) returns ["up", "down", "left", "right"]
     //.filter() filters the array based on the function provided as an argument (using arrow function syntax here)
     //In this case we want to filter out any of these directions for which moveSafety[direction] == false
@@ -128,8 +114,6 @@ export default function move(gameState){
     }
 
     let goodFood = findClose(food, myHead);
-    console.log(goodFood.x);
-    console.log(goodFood.y);
     
     if (health < 50) {
         console.log("Health is low, looking for food");
@@ -170,7 +154,7 @@ export default function move(gameState){
     // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
     // gameState.board.food contains an array of food coordinates https://docs.battlesnake.com/api/objects/board
     
-    
+console.log(makeGrid(width, height, arrayOfEnemyBodies));    
 console.log(`MOVE ${gameState.turn}: ${nextMove}`)
     return { move: nextMove };
 
