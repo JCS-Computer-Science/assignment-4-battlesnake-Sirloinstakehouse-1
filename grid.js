@@ -1,35 +1,19 @@
-export default function makeGrid (width, height, hazards) {
+export default function hazards (rows, columns, hazards) {
     let grid = [];
-    for (let i = 0; i < width; i++) {
+
+    for (let i = 0; i < rows; i++) {
         grid.push([]);
-        for (let j = 0; j < height; j++) {
+        for (let j = 0; j < columns; j++) {
             grid[i].push({x: i, y: j, safe: true});
         }
     }
-    return visualizeGrid(checkHazards(grid, hazards), hazards);
+    return arrayOfHazards(checkHazards(grid, rows, columns, hazards), rows, columns);
     
 }
 
-function visualizeGrid(grid, hazards) {
-    let visGrid = [];
-
-    for (let i = 0; i < grid.length; i++) {
-        visGrid.push([]);
-        for (let j = 0; j < grid[i].length; j++) {
-            if (grid[i][j].safe === true) {
-                visGrid[i].push(0);
-            } else if (grid[i][j].safe === false) {
-                visGrid[i].push(1);
-            }
-        }
-        
-    }
-    return visGrid;
-}
-
-function checkHazards(grid, hazards) {
-    for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[i].length; j++) {
+function checkHazards(grid, rows, columns, hazards) {
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
             for (let k = 0; k < hazards.length; k++) {
                 if (grid[i][j].x == hazards[k].x && grid[i][j].y == hazards[k].y) {
                     grid[i][j].safe = false;
@@ -38,4 +22,17 @@ function checkHazards(grid, hazards) {
         }
     }
     return grid;
+}
+
+function arrayOfHazards(grid, rows, columns) {
+    let arrayOfHazards = [];
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            let square = grid[i][j];
+            if (square.safe === false) {
+                arrayOfHazards.push(square);
+            }
+        }
+    }
+    return arrayOfHazards;
 }

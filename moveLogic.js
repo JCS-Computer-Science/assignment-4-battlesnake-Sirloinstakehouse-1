@@ -78,6 +78,8 @@ export default function move(gameState){
     // TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     // gameState.board.snakes contains an array of enemy snake objects, which includes their coordinates
     // https://docs.battlesnake.com/api/objects/battlesnake
+
+    // this needs to be done recursivly now. We need to make a grid for each enemy snake and mark the spaces they occupy as unsafe. Then we can check those spaces against our possible moves.
     let arrayOfEnemyBodies = [];
     for (let i = 0; i < enemySnakes.length; i++) {
         const eachSnake = enemySnakes[i];
@@ -85,20 +87,32 @@ export default function move(gameState){
         for (let j = 0; j < eachSnake.length; j++) {
             const bodyOfSnakes = eachSnake.body[j];
             arrayOfEnemyBodies.push(bodyOfSnakes);
-            if (bodyOfSnakes.x == rights[0] && bodyOfSnakes.y == rights[1]) {
-                moveSafety.right = false;
-            }
-            if (bodyOfSnakes.x == lefts[0] && bodyOfSnakes.y == lefts[1]) {
-                moveSafety.left = false;
-            }
-            if (bodyOfSnakes.x == ups[0] && bodyOfSnakes.y == ups[1]) {
-                moveSafety.up = false;
-            }
-            if (bodyOfSnakes.x == downs[0] && bodyOfSnakes.y == downs[1]) {
-                moveSafety.down = false;
-            }
-        }
-    }
+            let grid = makeGrid(width, height, arrayOfEnemyBodies);
+
+            
+
+    //     for (let l = 0; l < grid.length; l++) {
+    //         for (let h = 0; h < grid[l].length; h++) {
+    //             let square = grid[l][h];
+    //             if (square.safe === false) {
+    //                 console.log(`(${square.x}, ${square.y}) is not safe!`);
+    //                 if (ups == square.x && ups == square.y) {
+    //                     moveSafety.up = false;
+    //                 }
+    //                 if (downs == square.x && downs == square.y) {
+    //                     moveSafety.down = false;
+    //                 }
+    //                 if (rights == square.x && rights == square.y) {
+    //                     moveSafety.right = false;
+    //                 }
+    //                 if (lefts == square.x && lefts == square.y) {
+    //                     moveSafety.left = false;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+}
     // Are there any safe moves left?
     
    
@@ -146,7 +160,6 @@ export default function move(gameState){
             }
         }
     }
-    // doesn't work rn. idk why, all I know is that the if statment should work
 
     // Choose a random move from the safe moves
     const nextMove = safeMoves[Math.floor(Math.random() * safeMoves.length)];
@@ -154,7 +167,7 @@ export default function move(gameState){
     // TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
     // gameState.board.food contains an array of food coordinates https://docs.battlesnake.com/api/objects/board
     
-console.log(makeGrid(width, height, arrayOfEnemyBodies));    
+makeGrid(width, height, arrayOfEnemyBodies)
 console.log(`MOVE ${gameState.turn}: ${nextMove}`)
     return { move: nextMove };
 
