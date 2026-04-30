@@ -1,6 +1,7 @@
 import e from "express";
 import findClose from "./food.js";
 import makeGrid from "./grid.js";
+import locateHazards from "./locateHazards.js";
 
 export default function move(gameState){
     let moveSafety = {
@@ -87,32 +88,9 @@ export default function move(gameState){
         for (let j = 0; j < eachSnake.length; j++) {
             const bodyOfSnakes = eachSnake.body[j];
             arrayOfEnemyBodies.push(bodyOfSnakes);
-            let grid = makeGrid(width, height, arrayOfEnemyBodies);
-
-            
-
-    //     for (let l = 0; l < grid.length; l++) {
-    //         for (let h = 0; h < grid[l].length; h++) {
-    //             let square = grid[l][h];
-    //             if (square.safe === false) {
-    //                 console.log(`(${square.x}, ${square.y}) is not safe!`);
-    //                 if (ups == square.x && ups == square.y) {
-    //                     moveSafety.up = false;
-    //                 }
-    //                 if (downs == square.x && downs == square.y) {
-    //                     moveSafety.down = false;
-    //                 }
-    //                 if (rights == square.x && rights == square.y) {
-    //                     moveSafety.right = false;
-    //                 }
-    //                 if (lefts == square.x && lefts == square.y) {
-    //                     moveSafety.left = false;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-}
+            locateHazards(makeGrid(width, height, arrayOfEnemyBodies), arrayOfEnemyBodies, height, width, ups, downs, lefts, rights, moveSafety);
+        }
+    }
     // Are there any safe moves left?
     
    

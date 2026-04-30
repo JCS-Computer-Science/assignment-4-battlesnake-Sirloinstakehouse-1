@@ -1,14 +1,27 @@
 
-export default 
-
-//make a pathfinding algorithm without stealing someone elses code.
-//figure it out PLEASEEE
-function locateHazards (gameState, hazards, rows, columns) {
-    //idk man
-    //i don't know enough about javascript to actually code, but I also dont know how to learn.
-    //i know what I need to do but I have no clue how to do it.
-    //also this ai is pissing me off. SHUT UP.
-}
+export default function locateHazards (grid, hazards, rows, columns, ups, downs, lefts, rights, moveSafety) {
+    for (let i = 0; i < grid.length; i++) {
+        for (let j = 0; j < grid[i].length; j++) {
+                let square = grid[i][j];
+                if (square.safeScore == 2) {
+                    console.log(`(${square.x}, ${square.y}) is not safe!`);
+                        if (ups == square.x && ups == square.y) {
+                            moveSafety.up = false;
+                    }
+                        if (downs == square.x && downs == square.y) {
+                            moveSafety.down = false;
+                    }
+                        if (rights == square.x && rights == square.y) {
+                            moveSafety.right = false;
+                    }
+                        if (lefts == square.x && lefts == square.y) {
+                            moveSafety.left = false;
+                    }
+               }
+            }
+        }
+        return moveSafety;
+ }
 
 // the snakes goal is to find food, so we end space with be where the food is 
 // once a safe path is found, we will take the first step in the path, and then re-evaualte
